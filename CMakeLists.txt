@@ -8,5 +8,4 @@ else()
 endif()
 conan_basic_setup()
 
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/source_subfolder/cmake")
 add_subdirectory("source_subfolder")
