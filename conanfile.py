@@ -74,7 +74,7 @@ class DartsimConan(ConanFile):
         return ""
 
     def system_requirements(self):
-        packages = ["libassimp-dev", "libccd-dev", "libfcl-dev"]
+        packages = ["libassimp-dev", "libccd-dev", "libfcl-dev", "libtinyxml2-dev"]
 
         installer = tools.SystemPackageTool()
         arch_suffix = self.system_package_architecture()
@@ -114,3 +114,4 @@ class DartsimConan(ConanFile):
         self.cpp_info.libs.append("ccd")
         self.cpp_info.libs.append("octomap")
         self.cpp_info.libs.append("octomath")
+        self.cpp_info.libs.append("tinyxml2")
