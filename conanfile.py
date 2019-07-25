@@ -52,6 +52,15 @@ class DartsimConan(ConanFile):
         # Rename to "source_subfolder" is a convention to simplify later steps
         os.rename(extracted_dir, self._source_subfolder)
 
+        # get the sources from somewhere
+        tools.replace_in_file(
+            "source_subfolder/CMakeLists.txt",
+            "project(dart)",
+            """project(dart)
+           include(${CMAKE_BINARY_DIR}/../conanbuildinfo.cmake)
+           conan_basic_setup()""",
+        )
+
     def system_package_architecture(self):
         if tools.os_info.with_apt:
             if self.settings.arch == "x86":
@@ -83,7 +92,9 @@ class DartsimConan(ConanFile):
     def _configure_cmake(self):
         cmake = CMake(self)
         cmake.definitions["BUILD_TESTS"] = False  # example
-        cmake.configure(build_folder=self._build_subfolder)
+        cmake.configure(
+            build_folder=self._build_subfolder, source_folder=self._source_subfolder
+        )
         return cmake
 
     def build(self):
