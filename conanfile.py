@@ -74,7 +74,13 @@ class DartsimConan(ConanFile):
         return ""
 
     def system_requirements(self):
-        packages = ["libassimp-dev", "libccd-dev", "libfcl-dev", "libtinyxml2-dev"]
+        packages = [
+            "libassimp-dev",
+            "libccd-dev",
+            "libfcl-dev",
+            "libtinyxml2-dev",
+            "libode-dev",
+        ]
 
         installer = tools.SystemPackageTool()
         arch_suffix = self.system_package_architecture()
@@ -106,12 +112,58 @@ class DartsimConan(ConanFile):
         self.copy(pattern="*.a", dst="lib", keep_path=False)
         self.copy(pattern="*.so*", dst="lib", keep_path=False)
         self.copy(pattern="*.dylib", dst="lib", keep_path=False)
+        # copy all the external libraries
+        external_lib_folders = [
+            "dart/external/imgui",
+            "dart/external/lodepng",
+            "dart/external/odelcpsolver",
+        ]
+        for external_lib_folder in external_lib_folders:
+            self.copy(
+                pattern="*.dll", src=external_lib_folder, dst="bin", keep_path=False
+            )
+            self.copy(
+                pattern="*.lib", src=external_lib_folder, dst="lib", keep_path=False
+            )
+            self.copy(
+                pattern="*.a", src=external_lib_folder, dst="lib", keep_path=False
+            )
+            self.copy(
+                pattern="*.so*", src=external_lib_folder, dst="lib", keep_path=False
+            )
+            self.copy(
+                pattern="*.dylib", src=external_lib_folder, dst="lib", keep_path=False
+            )
 
     def package_info(self):
-        self.cpp_info.libs = tools.collect_libs(self)
-        self.cpp_info.libs.append("fcl")
-        self.cpp_info.libs.append("assimp")
-        self.cpp_info.libs.append("ccd")
-        self.cpp_info.libs.append("octomap")
-        self.cpp_info.libs.append("octomath")
-        self.cpp_info.libs.append("tinyxml2")
+        libs = tools.collect_libs(self)
+
+        # make sure dart is the first library so that the linking
+        # order is correct
+        try:
+            dart_index = libs.index("dart")
+            if dart_index != 0:
+                del libs[dart_index]
+                libs.insert(0, "dart")
+        except ValueError:
+            pass
+
+        # I don't know why sometimes it builds with dart and sometimes
+        # with dartd
+        try:
+            dart_index = libs.index("dartd")
+            if dart_index != 0:
+                del libs[dart_index]
+                libs.insert(0, "dartd")
+        except ValueError:
+            pass
+
+        libs.append("fcl")
+        libs.append("assimp")
+        libs.append("ccd")
+        libs.append("octomap")
+        libs.append("octomath")
+        libs.append("tinyxml2")
+        # libs.append("ode")
+
+        self.cpp_info.libs = libs
