@@ -80,6 +80,7 @@ class DartsimConan(ConanFile):
             "libfcl-dev",
             "libtinyxml2-dev",
             "libode-dev",
+            "liboctomap-dev"
         ]
 
         installer = tools.SystemPackageTool()
@@ -164,6 +165,6 @@ class DartsimConan(ConanFile):
         libs.append("octomap")
         libs.append("octomath")
         libs.append("tinyxml2")
-        # libs.append("ode")
+        libs.append("ode")
 
         self.cpp_info.libs = libs
