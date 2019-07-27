@@ -38,7 +38,7 @@ class DartsimConan(ConanFile):
         "boost_regex/1.69.0@bincrafters/stable",
         "libccd/2.1@rhololkeolke/stable",
         "fcl/0.6.0RC@rhololkeolke/stable",
-        "octomap/1.9.0@rhololkeolke/stable",
+        "octomap/1.6.8@rhololkeolke/stable",
     )
 
     def config_options(self):
@@ -88,9 +88,7 @@ class DartsimConan(ConanFile):
     def _configure_cmake(self):
         cmake = CMake(self)
         cmake.definitions["BUILD_TESTS"] = False  # example
-        cmake.configure(
-            build_folder=self._build_subfolder, source_folder=self._source_subfolder
-        )
+        cmake.configure(build_folder=self._build_subfolder)
         return cmake
 
     def build(self):
