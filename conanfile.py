@@ -1,5 +1,6 @@
-from conans import ConanFile, CMake, tools
 import os
+
+from conans import CMake, ConanFile, tools
 
 
 class DartsimConan(ConanFile):
@@ -35,6 +36,9 @@ class DartsimConan(ConanFile):
         "eigen/3.3.7@conan/stable",
         "boost/1.69.0@conan/stable",
         "boost_regex/1.69.0@bincrafters/stable",
+        "libccd/2.1@rhololkeolke/stable",
+        "fcl/0.6.0RC@rhololkeolke/stable",
+        "octomap/1.9.0@rhololkeolke/stable",
     )
 
     def config_options(self):
@@ -74,14 +78,7 @@ class DartsimConan(ConanFile):
         return ""
 
     def system_requirements(self):
-        packages = [
-            "libassimp-dev",
-            "libccd-dev",
-            "libfcl-dev",
-            "libtinyxml2-dev",
-            "libode-dev",
-            "liboctomap-dev"
-        ]
+        packages = ["libassimp-dev", "libtinyxml2-dev", "libode-dev"]
 
         installer = tools.SystemPackageTool()
         arch_suffix = self.system_package_architecture()
@@ -159,11 +156,7 @@ class DartsimConan(ConanFile):
         except ValueError:
             pass
 
-        libs.append("fcl")
         libs.append("assimp")
-        libs.append("ccd")
-        libs.append("octomap")
-        libs.append("octomath")
         libs.append("tinyxml2")
         libs.append("ode")
 

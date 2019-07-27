@@ -1,0 +1,79 @@
+env:
+  global:
+  - CONAN_USERNAME: rhololkeolke
+  - CONAN_LOGIN_USERNAME: rhololkeolke
+  - CONAN_CHANNEL: testing
+  - CONAN_UPLOAD: https://api.bintray.com/conan/rhololkeolke/public-conan
+  - CONAN_STABLE_BRANCH_PATTERN: stable/*
+  - CONAN_UPLOAD_ONLY_WHEN_STABLE: 1
+  - CONAN_ARCHS: x86_64
+  - secure: GMJJdtjURRni4oIhNoD+J3eXQ/wU29kDibOSekB3lL8BEEf8CKdNwmrL47TjC3824qG0Eh4RS5y4tQhehdNroGhxznPL4NN8O0m0nZD8NlcCiSY/57czA/OCS7Gq3QknWv+DT6OhhXoUnCxD0SEF8/RyTMABwaGQlcKH13kTGVMImBwo90zGZUr0B2R7AQprIcq2t+hT5p+ou08dMmyTSno3T+7WyrJFKsa9GBVsygP9eLOEd9cnZe02pV1PPdDff8Zerx3Hf/mDwa+7DbTJ6X+DKDKC97xFsRl7HagU3gZNaIIE9Ap87jK0Opg7OHnjjbSDcm16jNWaD2DvyLqw7tSftdxFR+XhKVFv9vTBXUu+UIWi1GZara+QpHYuL3grYl5YNByAG/cZe/RO+fW62hIELU3zWLXX/lcjTTyCcYMh9Tt6TgpSTUME9umaXlhAfICqpBTAzdhneQ1pX13wLPZ8nLtBDBLHQkU8hP1MorYEwERKfgg3ATJrErmZehQjimvrR/889qaq6zt+2QLNVHIRm/5w1YImOmYlbVfadQkL0P/sziMYDTb786bSMdM7Gbt+yPRagNbVLtkEbUxvwYbsn46b6FNC+pnv8sNA2WpDd6ArCSoa1rUbDSpHDvZnXKIwJCKjAhjYaTn4eRfPdzC6NZNInxflxzV3I3oIOzk=
+  - secure: Sf0T3gnxpIXto5HmjaQmn2uTEbB0lRm68FheyA9al6UnAnt7YLNGJ1yIhcWWqGidu/1ktSoTTnOl/Vt6QdD6zJ1LD98X7QVBPLyupFfJkxLdeHD4ujIeZtSkQeylgiDo8I5XJol33/xmnR4jNVL96Z9nn6GyGgvzq5O4ADUowx8Wt9LtIvtu2DenDPR9h5uJYLGUr3yr3CjjE/gcDaqf0/wVrjjS7VQtgUWCPI+ktq3z3eBpiLqfC2A0vsH5SdwZav4VpilyWQQ9MkHiSAZ/eqnxgRrRCH4RgWPV5y7qbbyu/J4Rlna/UHQ2Kb2wPgEPSZrWn+FbyWZvXQPSSXK8ITtiTjzRjkVG4ji30HvsCsfWYTs450i/zH8/ulYH8sraSn3+wkOv86MLPHuHF/E8MfNCYX8qw2Vp7lH5IzNsuVulvbrQeOIUcMJq6Iju+fjstnpxJVHFr3V0aHvOcwFlac93RX0Br/wmqcc47fo2DFe96VB27GsyCWJM2NPKUXcoAT/GJ1znz+ksGFVZNJpG3HlRPCzoTNVgzclnjG3o0XSd97PakLW3LN9ZAGqTovHnxXhjM+4IZTCkxBdxAAQXlDcf7S/I+XUYTmxQkXTxgQc2q5Ou/UG6R3SWOB7s/xUS8Z4Qm/nuaHQK2yqAf9pMUqPXhqTqqFYKDhEj9a0foeY=
+  - secure: wy1KrwgvEnCSUdZj9LrimmIEjx2UmO41gbv+/liIKacHHDUZcXKod8dYjRoQQvksG+IGbMdXmMJm4lzJ4s0Qe5/hFfUB3QOvEc30n34XpkyZEtUpMKmuYG31ZXzf/dTRUr/XpTX0O8jfbzIGvCWQ4ViryRW7sOmW/TP5HKK5PvHnrgduRBCruiB3M+o0tDyLl2ElIz2SorWE6htTDbGuM32L6MbWazUQuLPt6nhLy6Pl8D9KwgIxjHt9hQHz3h2rM7tCK8QjtdTI5zadj74HEKKeD7c7rmSUQsQovwDoTBpVwkWxV/xrHlNZXQYF6/qxLMxq2QDe0ct9II3A9kF44dmv5dQKa9QLjlpmQYT+P/QXOv5YIpCLobel2oRQNAl7xr0lF4/2NIAwNsSuqeR2893nLlJKl/0XDA9J2RMkbOPAeDr4HLy/zqKZrE/Dsr5ig5WTiF54kmP1JBTOEEV22jTdSFpVN5h4r+XcOUi5TOsbvhZM2jFpy+TkMs79NOLqHjwO7yu5SgnLsjlbzpiCAlJBSxrtZywCw2XG6jC44Ye/WKrAUg3MrPK47pCjUMp6AYFlf7DRIOTcuuH5Vyqy2nYLmGW6A37Dj4jLOrp7LCFY4NA0pgbjJ4jnp2qe0JBd8ynYqNYbSKb0EYbozyQ1ymkKc6GaHWykSaj80rOnm7M=
+linux:
+  os: linux
+  dist: xenial
+  sudo: required
+  language: python
+  python: '3.7'
+  install: &1
+  - pip install -U conan conan_package_tools
+  addons: &2
+    apt:
+      sources:
+      - llvm-toolchain-xenial-8
+      - llvm-toolchain-xenial-7
+      packages:
+      - figlet
+matrix:
+  include:
+  - os: linux
+    dist: xenial
+    sudo: required
+    language: python
+    python: '3.7'
+    install: *1
+    addons: *2
+    env: CONAN_GCC_VERSIONS=7 CC=/usr/bin/gcc-7 CXX=/usr/bin/g++-7 PACKAGES="gcc-7
+      g++-7"
+  - os: linux
+    dist: xenial
+    sudo: required
+    language: python
+    python: '3.7'
+    install: *1
+    addons: *2
+    env: CONAN_GCC_VERSIONS=8 CC=/usr/bin/gcc-8 CXX=/usr/bin/g++-8 PACKAGES="gcc-8
+      g++-8"
+  - os: linux
+    dist: xenial
+    sudo: required
+    language: python
+    python: '3.7'
+    install: *1
+    addons: *2
+    env: CONAN_CLANG_VERSIONS=7.1 CC=/usr/bin/clang-7 CXX=/usr/bin/clang++-7 PACKAGES=clang-7
+  - os: linux
+    dist: xenial
+    sudo: required
+    language: python
+    python: '3.7'
+    install: *1
+    addons: *2
+    env: CONAN_CLANG_VERSIONS=8 CC=/usr/bin/clang-8 CXX=/usr/bin/clang++-8 PACKAGES=clang-8
+before_install:
+- sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+- sudo apt-get update -q
+- sudo apt-get install libstdc++-7-dev ${PACKAGES} -y
+- figlet "CMake"
+- wget https://github.com/Kitware/CMake/releases/download/v3.14.3/cmake-3.14.3-Linux-x86_64.sh
+- chmod +x cmake-3.14.3-Linux-x86_64.sh
+- sudo ./cmake-3.14.3-Linux-x86_64.sh --prefix=/usr/local/ --skip-license --exclude-subdir
+- rm cmake-3.14.3-Linux-x86_64.sh
+- cmake --version
+install:
+- chmod +x .travis/install.sh
+- "./.travis/install.sh"
+script:
+- chmod +x .travis/run.sh
+- "./.travis/run.sh"
