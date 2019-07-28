@@ -39,6 +39,7 @@ class DartsimConan(ConanFile):
         "libccd/2.1@rhololkeolke/stable",
         "fcl/0.6.0RC@rhololkeolke/stable",
         "octomap/1.6.8@rhololkeolke/stable",
+        "nlopt/2.6.1@rhololkeolke/stable",
     )
 
     def config_options(self):
