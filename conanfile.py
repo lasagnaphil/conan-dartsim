@@ -26,7 +26,7 @@ class DartsimConan(ConanFile):
     # Options may need to change depending on the packaged library.
     settings = "os", "arch", "compiler", "build_type"
     options = {"shared": [True, False], "fPIC": [True, False]}
-    default_options = {"shared": False, "fPIC": True}
+    default_options = {"shared": False, "fPIC": True, "bullet3:double_precision": True}
 
     # Custom attributes for Bincrafters recipe conventions
     _source_subfolder = "source_subfolder"
@@ -40,6 +40,8 @@ class DartsimConan(ConanFile):
         "fcl/0.6.0RC@rhololkeolke/stable",
         "octomap/1.6.8@rhololkeolke/stable",
         "nlopt/2.6.1@rhololkeolke/stable",
+        "pagmo/2.10@rhololkeolke/stable",
+        "bullet3/2.88@bincrafters/stable",
     )
 
     def config_options(self):
@@ -79,7 +81,12 @@ class DartsimConan(ConanFile):
         return ""
 
     def system_requirements(self):
-        packages = ["libassimp-dev", "libtinyxml2-dev", "libode-dev"]
+        packages = [
+            "libassimp-dev",
+            "coinor-libipopt-dev",
+            "libtinyxml2-dev",
+            "libode-dev",
+        ]
 
         installer = tools.SystemPackageTool()
         arch_suffix = self.system_package_architecture()
