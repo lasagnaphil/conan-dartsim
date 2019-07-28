@@ -18,9 +18,6 @@ class DartsimConan(ConanFile):
     )  # Indicates license type of the packaged library; please use
     # SPDX Identifiers https://spdx.org/licenses/
     exports = ["LICENSE.md"]  # Packages the license for the
-    # conanfile.py Remove following lines if the target lib does not
-    # use cmake.
-    exports_sources = ["CMakeLists.txt"]
     generators = "cmake"
 
     # Options may need to change depending on the packaged library.
@@ -58,12 +55,13 @@ class DartsimConan(ConanFile):
 
         # Rename to "source_subfolder" is a convention to simplify later steps
         os.rename(extracted_dir, self._source_subfolder)
-        os.symlink(os.path.join(os.getcwd(), self._source_subfolder, "cmake"), "cmake")
-        # expects dart/config.hpp.in to be in main source folder
-        os.mkdir(os.path.join(os.getcwd(), "dart"))
-        os.symlink(
-            os.path.join(os.getcwd(), self._source_subfolder, "dart", "config.hpp.in"),
-            os.path.join(os.getcwd(), "dart", "config.hpp.in"),
+
+        tools.replace_in_file(
+            os.path.join(self._source_subfolder, "CMakeLists.txt"),
+            "project(dart)",
+            """project(dart)
+include(${CMAKE_CURRENT_BINARY_DIR}/../conanbuildinfo.cmake)
+conan_basic_setup()""",
         )
 
     def system_package_architecture(self):
@@ -102,7 +100,9 @@ class DartsimConan(ConanFile):
     def _configure_cmake(self):
         cmake = CMake(self)
         cmake.definitions["BUILD_TESTS"] = False  # example
-        cmake.configure(build_folder=self._build_subfolder)
+        cmake.configure(
+            build_folder=self._build_subfolder, source_folder=self._source_subfolder
+        )
         return cmake
 
     def build(self):
