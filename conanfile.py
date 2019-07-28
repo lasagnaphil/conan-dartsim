@@ -59,6 +59,12 @@ class DartsimConan(ConanFile):
         # Rename to "source_subfolder" is a convention to simplify later steps
         os.rename(extracted_dir, self._source_subfolder)
         os.symlink(os.path.join(os.getcwd(), self._source_subfolder, "cmake"), "cmake")
+        # expects dart/config.hpp.in to be in main source folder
+        os.mkdir(os.path.join(os.getcwd(), "dart"))
+        os.symlink(
+            os.path.join(os.getcwd(), self._source_subfolder, "dart", "config.hpp.in"),
+            os.path.join(os.getcwd(), "dart", "config.hpp.in"),
+        )
 
     def system_package_architecture(self):
         if tools.os_info.with_apt:
