@@ -34,32 +34,6 @@ matrix:
     python: '3.7'
     install: *1
     addons: *2
-    env: CONAN_GCC_VERSIONS=7 CC=/usr/bin/gcc-7 CXX=/usr/bin/g++-7 PACKAGES="gcc-7
-      g++-7"
-  - os: linux
-    dist: xenial
-    sudo: required
-    language: python
-    python: '3.7'
-    install: *1
-    addons: *2
-    env: CONAN_GCC_VERSIONS=8 CC=/usr/bin/gcc-8 CXX=/usr/bin/g++-8 PACKAGES="gcc-8
-      g++-8"
-  - os: linux
-    dist: xenial
-    sudo: required
-    language: python
-    python: '3.7'
-    install: *1
-    addons: *2
-    env: CONAN_CLANG_VERSIONS=7.1 CC=/usr/bin/clang-7 CXX=/usr/bin/clang++-7 PACKAGES=clang-7
-  - os: linux
-    dist: xenial
-    sudo: required
-    language: python
-    python: '3.7'
-    install: *1
-    addons: *2
     env: CONAN_CLANG_VERSIONS=8 CC=/usr/bin/clang-8 CXX=/usr/bin/clang++-8 PACKAGES=clang-8
 before_install:
 - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
