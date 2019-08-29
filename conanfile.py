@@ -6,7 +6,7 @@ from conans.errors import ConanInvalidConfiguration
 
 class DartsimConan(ConanFile):
     name = "dart"
-    version = "6.9.1"
+    version = "6.9.2"
     description = "Dynamic Animation and Robotics Toolkit"
     # topics can get used for searches, GitHub topics, Bintray tags
     # etc. Add here keywords about the library
@@ -71,7 +71,7 @@ class DartsimConan(ConanFile):
         source_url = "https://github.com/dartsim/dart"
         tools.get(
             "{0}/archive/v{1}.tar.gz".format(source_url, self.version),
-            sha256="9e2954aaf2d4538a7e4aab5188f1061c3e216c8c0b72483c2d0b9e814525acd1",
+            sha256="7d46d23c04d74d3b78331f9fa7deb5ab32fd4b0c03b93548cd84a2d67771d816",
         )
         extracted_dir = self.name + "-" + self.version
 
