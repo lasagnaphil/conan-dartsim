@@ -119,12 +119,18 @@ conan_basic_setup()""",
         for package in packages:
             installer.install("{}{}".format(package, arch_suffix))
 
-    def _configure_cmake(self):
+    def _configure_cmake(self, with_py=False):
         cmake = CMake(self)
         cmake.definitions["BUILD_TESTS"] = False  # example
-        cmake.definitions["DART_BUILD_DARTPY"] = self.options.build_dartpy
+        if with_py:
+            cmake.definitions["DART_BUILD_DARTPY"] = self.options.build_dartpy
+            if self.options.build_dartpy:
+                cmake.definitions[
+                    "PYBIND11_PYTHON_VERSION"
+                ] = self.options.python_version
+        else:
+            cmake.definitions["DART_BUILD_DARTPY"] = False
         if self.options.build_dartpy:
-            cmake.definitions["PYBIND11_PYTHON_VERSION"] = self.options.python_version
             cmake.definitions["CMAKE_CXX_FLAGS"] = "-fsized-deallocation"
         cmake.configure(
             build_folder=self._build_subfolder, source_folder=self._source_subfolder
@@ -132,12 +138,15 @@ conan_basic_setup()""",
         return cmake
 
     def build(self):
-        cmake = self._configure_cmake()
+        cmake = self._configure_cmake(with_py=True)
         cmake.build()
 
     def package(self):
         self.copy(pattern="LICENSE", dst="licenses", src=self._source_subfolder)
-        cmake = self._configure_cmake()
+        # before installing, we need to configure without python
+        # because DART disables the install targets when python
+        # bindings are built
+        cmake = self._configure_cmake(with_py=False)
         cmake.install()
         # If the CMakeLists.txt has a proper install method, the steps below may be redundant
         # If so, you can just remove the lines below
