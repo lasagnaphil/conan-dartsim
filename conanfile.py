@@ -1,6 +1,7 @@
 import os
 
 from conans import CMake, ConanFile, tools
+from conans.errors import ConanInvalidConfiguration
 
 
 class DartsimConan(ConanFile):
@@ -22,8 +23,19 @@ class DartsimConan(ConanFile):
 
     # Options may need to change depending on the packaged library.
     settings = "os", "arch", "compiler", "build_type"
-    options = {"shared": [True, False], "fPIC": [True, False]}
-    default_options = {"shared": False, "fPIC": True, "bullet3:double_precision": True}
+    options = {
+        "shared": [True, False],
+        "fPIC": [True, False],
+        "build_dartpy": [True, False],
+        "python_version": "ANY",
+    }
+    default_options = {
+        "shared": False,
+        "fPIC": True,
+        "bullet3:double_precision": True,
+        "build_dartpy": False,
+        "python_version": "UNSET",
+    }
 
     # Custom attributes for Bincrafters recipe conventions
     _source_subfolder = "source_subfolder"
@@ -41,9 +53,19 @@ class DartsimConan(ConanFile):
         "bullet3/2.88@bincrafters/stable",
     )
 
+    def configure(self):
+        if self.options.build_dartpy and self.options.python_version == "UNSET":
+            raise ConanInvalidConfiguration(
+                "If you enable the build_dartpy option, you must specify a python version"
+            )
+
     def config_options(self):
         if self.settings.os == "Windows":
             del self.options.fPIC
+
+    def requirements(self):
+        if self.options.build_dartpy:
+            self.requires("pybind11/2.3.0@conan/stable")
 
     def source(self):
         source_url = "https://github.com/dartsim/dart"
@@ -100,6 +122,10 @@ conan_basic_setup()""",
     def _configure_cmake(self):
         cmake = CMake(self)
         cmake.definitions["BUILD_TESTS"] = False  # example
+        cmake.definitions["DART_BUILD_DARTPY"] = self.options.build_dartpy
+        if self.options.build_dartpy:
+            cmake.definitions["PYBIND11_PYTHON_VERSION"] = self.options.python_version
+            cmake.definitions["CMAKE_CXX_FLAGS"] = "-fsized-deallocation"
         cmake.configure(
             build_folder=self._build_subfolder, source_folder=self._source_subfolder
         )
@@ -120,7 +146,7 @@ conan_basic_setup()""",
         self.copy(pattern="*.dll", dst="bin", keep_path=False)
         self.copy(pattern="*.lib", dst="lib", keep_path=False)
         self.copy(pattern="*.a", dst="lib", keep_path=False)
-        self.copy(pattern="*.so*", dst="lib", keep_path=False)
+        self.copy(pattern="*.so*", dst="lib", keep_path=False, excludes="*dartpy.so*")
         self.copy(pattern="*.dylib", dst="lib", keep_path=False)
         # copy all the external libraries
         external_lib_folders = [
@@ -144,9 +170,21 @@ conan_basic_setup()""",
             self.copy(
                 pattern="*.dylib", src=external_lib_folder, dst="lib", keep_path=False
             )
+        # copy the python library to separate folder
+        if self.options.build_dartpy:
+            self.copy(pattern="*dartpy.so*", dst="python", keep_path=False)
 
     def package_info(self):
         libs = tools.collect_libs(self)
+        if self.options.build_dartpy:
+            # Make sure dartpy.so didn't sneak into the libs list
+            #
+            # Although the copy rules in the package method should
+            # prevent this.
+            try:
+                del libs[libs.index("dartpy")]
+            except ValueError:
+                pass
 
         # make sure dart is the first library so that the linking
         # order is correct
@@ -173,3 +211,7 @@ conan_basic_setup()""",
         libs.append("ode")
 
         self.cpp_info.libs = libs
+
+        # set pythonpath if python bindings are built
+        if self.options.build_dartpy:
+            self.env_info.PYTHONPATH.append(os.path.join(self.package_folder, "python"))
