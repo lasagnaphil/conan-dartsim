@@ -112,6 +112,13 @@ conan_basic_setup()""",
             "coinor-libipopt-dev",
             "libtinyxml2-dev",
             "libode-dev",
+            "libflann-dev",
+            "liburdfdom-dev",
+            "libgl1-mesa-dev",
+            "freeglut3-dev",
+            "libopenscenegraph-dev",
+            "libopenthreads-dev",
+            "liblz4-dev"
         ]
 
         installer = tools.SystemPackageTool()
