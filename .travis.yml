@@ -8,46 +8,29 @@ env:
   - CONAN_UPLOAD_ONLY_WHEN_STABLE: 1
   - CONAN_ARCHS: x86_64
   - CONAN_BUILD_POLICY: outdated
-  - CONAN_REMOTES: "https://api.bintray.com/conan/bincrafters/public-conan,https://api.bintray.com/conan/bincrafters/public-conan"
+  - CONAN_REMOTES: "https://api.bintray.com/conan/bincrafters/public-conan"
   - secure: LYpa/57o6MU94lzo+vvDhuEbtVQw6mkn+AhperhdBhchHTp6ys75KovYnrvHFEzywE8+VCJq1sRzMxz+xEnhZayaKVaHoS8o8djby1iGoHuHkQU4OygOY2EZAYywxJnw3QIyatekhcLg3SslaiU7lPYJxa0OZ2XCA6iOQPtTXRBHHUfQzXj5Lv89FOP6YuEVTnI1b1SSq2f0LEN+8oR2MI8tcKDPSOZjFRKTcjjCRAILvlHT9cLHM/YaxZZVn3kRSFGpPNizgzJt+bLuvr02aKyKO5txt2/kxACCowz+8j+HOdgaefYGX6/Ts7sWUxHRT6BUXTwLMGHOeDan7toMasTRw0cGvD2VYsAI01oftVrb3sHLzs92w8+XJXIa4xHdGugolI9Iy5Ji2lYBZ4H/btZcj0livtmNYGCyXOJw5i9oJ0thT2M+enZ0o2Yjdqj8vodWTjkYvHxW7I/tsbC3zxHmFuC0LYA5lPHWGSnnFfNS/VCLUQHFy1e2cya3ntcvPEarRaaAWsI6MGlcZh89JzEUNhW/IB/7UsTMDnHffRmRR5DSziKhrtM7Rv+QscrOtAO30rCpLCrf0Z4pl6FWJtpxqQQZ1jAKiRYN/KcBMpRnC80JYm292AVtwm+Bgve9LHaRavdZZgitw1qXWfObpj99zUKoxuDNISkfiJMgFzo=
-linux:
+linux: &linux
   os: linux
   dist: xenial
   sudo: required
   language: python
   python: '3.7'
-  install: &1
-  - pip install -U conan conan_package_tools
-  addons: &2
-    apt:
-      sources:
-      - llvm-toolchain-xenial-8
-      - llvm-toolchain-xenial-7
-      packages:
-      - figlet
+  services: 
+    - docker
 matrix:
   include:
-  - os: linux
-    dist: xenial
-    sudo: required
-    language: python
-    python: '3.7'
-    install: *1
-    addons: *2
-    env: CONAN_CLANG_VERSIONS=8 CC=/usr/bin/clang-8 CXX=/usr/bin/clang++-8 PACKAGES=clang-8
-before_install:
-- sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-- sudo apt-get update -q
-- sudo apt-get install libstdc++-7-dev ${PACKAGES} -y
-- figlet "CMake"
-- wget https://github.com/Kitware/CMake/releases/download/v3.14.3/cmake-3.14.3-Linux-x86_64.sh
-- chmod +x cmake-3.14.3-Linux-x86_64.sh
-- sudo ./cmake-3.14.3-Linux-x86_64.sh --prefix=/usr/local/ --skip-license --exclude-subdir
-- rm cmake-3.14.3-Linux-x86_64.sh
-- cmake --version
+  - <<: *linux
+    env: CONAN_GCC_VERSIONS=8 CONAN_DOCKER_IMAGE=conanio/gcc8
+  - <<: *linux
+    env: CONAN_GCC_VERSIONS=9 CONAN_DOCKER_IMAGE=conanio/gcc9
+  - <<: *linux
+    env: CONAN_CLANG_VERSIONS=7.0 CONAN_DOCKER_IMAGE=conanio/clang7
+  - <<: *linux
+    env: CONAN_CLANG_VERSIONS=8 CONAN_DOCKER_IMAGE=conanio/clang8
 install:
-- chmod +x .travis/install.sh
-- "./.travis/install.sh"
+  - chmod +x .travis/install.sh
+  - "./.travis/install.sh"
 script:
-- chmod +x .travis/run.sh
-- "./.travis/run.sh"
+  - chmod +x .travis/run.sh
+  - "./.travis/run.sh"
