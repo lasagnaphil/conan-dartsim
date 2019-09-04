@@ -42,7 +42,7 @@ class DartsimConan(ConanFile):
     _build_subfolder = "build_subfolder"
 
     requires = (
-        "eigen/3.3.7@conan/stable",
+        "eigen/3.3.5@conan/stable",
         "boost/1.69.0@conan/stable",
         "boost_regex/1.69.0@bincrafters/stable",
         "libccd/2.1@rhololkeolke/stable",
