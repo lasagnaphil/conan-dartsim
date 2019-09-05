@@ -118,7 +118,7 @@ conan_basic_setup()""",
             "freeglut3-dev",
             "libopenscenegraph-dev",
             "libopenthreads-dev",
-            "liblz4-dev",
+            "liblz4-dev"
         ]
 
         installer = tools.SystemPackageTool()
@@ -135,7 +135,6 @@ conan_basic_setup()""",
                 cmake.definitions[
                     "PYBIND11_PYTHON_VERSION"
                 ] = self.options.python_version
-                cmake.definitions["DARTPY_PYTHON_VERSION"] = self.options.python_version
         else:
             cmake.definitions["DART_BUILD_DARTPY"] = False
         if self.options.build_dartpy:
