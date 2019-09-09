@@ -18,7 +18,7 @@ class DartsimConan(ConanFile):
         'BSD 2-Clause "Simplified" License'
     )  # Indicates license type of the packaged library; please use
     # SPDX Identifiers https://spdx.org/licenses/
-    exports = ["LICENSE.md"]  # Packages the license for the
+    exports = ["LICENSE.md", "dartpy_find_python.patch"]  # Packages the license for the
     generators = "cmake"
 
     # Options may need to change depending on the packaged library.
@@ -28,6 +28,7 @@ class DartsimConan(ConanFile):
         "fPIC": [True, False],
         "build_dartpy": [True, False],
         "python_version": "ANY",
+        "shared_python": [True, False],
     }
     default_options = {
         "shared": False,
@@ -35,6 +36,7 @@ class DartsimConan(ConanFile):
         "bullet3:double_precision": True,
         "build_dartpy": False,
         "python_version": "UNSET",
+        "shared_python": False,
     }
 
     # Custom attributes for Bincrafters recipe conventions
@@ -86,6 +88,10 @@ include(${CMAKE_CURRENT_BINARY_DIR}/../conanbuildinfo.cmake)
 conan_basic_setup()""",
         )
 
+        tools.patch(
+            base_path=self._source_subfolder, patch_file="dartpy_find_python.patch"
+        )
+
     def system_package_architecture(self):
         if tools.os_info.with_apt:
             if self.settings.arch == "x86":
@@ -118,7 +124,7 @@ conan_basic_setup()""",
             "freeglut3-dev",
             "libopenscenegraph-dev",
             "libopenthreads-dev",
-            "liblz4-dev"
+            "liblz4-dev",
         ]
 
         installer = tools.SystemPackageTool()
@@ -135,6 +141,12 @@ conan_basic_setup()""",
                 cmake.definitions[
                     "PYBIND11_PYTHON_VERSION"
                 ] = self.options.python_version
+                cmake.definitions["DARTPY_PYTHON_VERSION"] = self.options.python_version
+                cmake.definitions[
+                    "Python_USE_STATIC_LIBS"
+                ] = not self.options.shared_python
+                if "Python_ROOT_DIR" in os.environ:
+                    cmake.definitions["Python_ROOT_DIR"] = os.environ["Python_ROOT_DIR"]
         else:
             cmake.definitions["DART_BUILD_DARTPY"] = False
         if self.options.build_dartpy:

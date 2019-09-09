@@ -1,0 +1,55 @@
+From eb5c4105bee85d2441c4ce53777c77d84dd90149 Mon Sep 17 00:00:00 2001
+From: Devin Schwab <digidevin@gmail.com>
+Date: Mon, 9 Sep 2019 13:47:17 -0700
+Subject: [PATCH] Changing how Python libs are found
+
+---
+ python/dartpy/CMakeLists.txt | 31 ++++++++++++-------------------
+ 1 file changed, 12 insertions(+), 19 deletions(-)
+
+diff --git a/python/dartpy/CMakeLists.txt b/python/dartpy/CMakeLists.txt
+index 4eefeef01..5cfbe82c0 100644
+--- a/python/dartpy/CMakeLists.txt
++++ b/python/dartpy/CMakeLists.txt
+@@ -2,26 +2,19 @@ if(NOT DARTPY_PYTHON_VERSION)
+   set(DARTPY_PYTHON_VERSION 3.4 CACHE STRING "Choose the target Python version (e.g., 3.4, 2.7)" FORCE)
+ endif()
+ 
+-find_package(PythonInterp ${DARTPY_PYTHON_VERSION} QUIET)
+-execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
+-  "from distutils.sysconfig import get_python_lib;\
+-  print(get_python_lib(plat_specific=True, prefix=''))"
+-  OUTPUT_VARIABLE PYTHON_SITE_PACKAGES
+-  OUTPUT_STRIP_TRAILING_WHITESPACE
+-)
+-if(NOT PythonInterp_FOUND)
+-  message(STATUS "DART_BUILD_DARTPY is ON, but failed to find PythonInterp. "
+-    "Disabling dartpy."
+-  )
+-  return()
+-endif()
++find_package(Python ${DARTPY_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter Development)
+ 
+-find_package(PythonLibs ${DARTPY_PYTHON_VERSION} QUIET)
+-if(NOT PythonLibs_FOUND)
+-  message(STATUS "DART_BUILD_DARTPY is ON, but failed to find PythonLibs. "
+-    "Disabling dartpy."
+-  )
+-  return()
++if(Python_FOUND)  
++  message(STATUS "Found Python version ${Python_VERSION}")
++  message(STATUS "Python executable ${Python_EXECUTABLE}")
++  message(STATUS "Python include dirs" ${Python_INCLUDE_DIRS})
++  message(STATUS "Python libraries" ${Python_LIBRARIES})
++  
++  # these are the variables the rest of the CMakeLists uses.
++  set(PYTHON_INCLUDE_DIRS ${Python_INCLUDE_DIRS})
++  set(PYTHON_LIBRARIES ${Python_LIBRARIES})
++else()
++  message(FATAL_ERROR "Failed to find Python!")
+ endif()
+ 
+ # Find pybind11
+-- 
+2.17.1
+
