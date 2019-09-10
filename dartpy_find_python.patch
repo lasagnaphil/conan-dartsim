@@ -1,14 +1,14 @@
-From eb5c4105bee85d2441c4ce53777c77d84dd90149 Mon Sep 17 00:00:00 2001
+From 007fd9e2566106c85d14613af3452e0c49a23460 Mon Sep 17 00:00:00 2001
 From: Devin Schwab <digidevin@gmail.com>
 Date: Mon, 9 Sep 2019 13:47:17 -0700
 Subject: [PATCH] Changing how Python libs are found
 
 ---
- python/dartpy/CMakeLists.txt | 31 ++++++++++++-------------------
- 1 file changed, 12 insertions(+), 19 deletions(-)
+ python/dartpy/CMakeLists.txt | 35 +++++++++++++++--------------------
+ 1 file changed, 15 insertions(+), 20 deletions(-)
 
 diff --git a/python/dartpy/CMakeLists.txt b/python/dartpy/CMakeLists.txt
-index 4eefeef01..5cfbe82c0 100644
+index 4eefeef01..aecf98138 100644
 --- a/python/dartpy/CMakeLists.txt
 +++ b/python/dartpy/CMakeLists.txt
 @@ -2,26 +2,19 @@ if(NOT DARTPY_PYTHON_VERSION)
@@ -50,6 +50,16 @@ index 4eefeef01..5cfbe82c0 100644
  endif()
  
  # Find pybind11
+@@ -46,7 +39,9 @@ pybind11_add_module(dartpy
+   MODULE
+   ${dartpy_headers}
+   ${dartpy_sources}
+-)
++  )
++
++target_include_directories(dartpy PUBLIC ${CONAN_INCLUDE_DIRS_ASSIMP})
+ 
+ target_include_directories(dartpy
+   SYSTEM PUBLIC
 -- 
 2.17.1
-

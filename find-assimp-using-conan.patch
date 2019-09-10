@@ -1,0 +1,48 @@
+From a0b8d465ff039c5ee9b6ea6d893d6d46f8cd0740 Mon Sep 17 00:00:00 2001
+From: Devin Schwab <digidevin@gmail.com>
+Date: Tue, 10 Sep 2019 11:03:11 -0700
+Subject: [PATCH] Using CONAN defines when creating assimp target
+
+---
+ cmake/DARTFindassimp.cmake | 25 +++++++++----------------
+ 1 file changed, 9 insertions(+), 16 deletions(-)
+
+diff --git a/cmake/DARTFindassimp.cmake b/cmake/DARTFindassimp.cmake
+index 0717eb76f..e61bec5a1 100644
+--- a/cmake/DARTFindassimp.cmake
++++ b/cmake/DARTFindassimp.cmake
+@@ -6,22 +6,15 @@
+ #
+ # This file is provided under the "BSD-style" License
+ 
+-find_package(assimp REQUIRED MODULE)
+-
+-# Manually check version because the upstream version compatibility policy
+-# doesn't allow different major number while DART is compatible any version
+-# greater than or equal to 3.2.
+-if(ASSIMP_VERSION VERSION_LESS 3.2)
+-  message(STATUS "Found Assimp ${ASSIMP_VERSION}, but Assimp >= 3.2 is "
+-    "required"
+-  )
+-endif()
+-
+-# Set target assimp if not set
+-if((ASSIMP_FOUND OR assimp_FOUND) AND NOT TARGET assimp)
++if (NOT TARGET assimp)
++  message(STATUS "Creating assimp target")
++  message(STATUS "Assimp Include dirs: ${CONAN_INCLUDE_DIRS_ASSIMP}")
++  message(STATUS "Assimp libs: ${CONAN_LIBS_ASSIMP}")
++  set(ASSIMP_FOUND YES)
++  set(assimp_FOUND YES)
+   add_library(assimp INTERFACE IMPORTED)
+   set_target_properties(assimp PROPERTIES
+-    INTERFACE_INCLUDE_DIRECTORIES "${ASSIMP_INCLUDE_DIRS}"
+-    INTERFACE_LINK_LIBRARIES "${ASSIMP_LIBRARIES}"
+-  )
++    INTERFACE_INCLUDE_DIRECTORIES "${CONAN_INCLUDE_DIRS_ASSIMP}"
++    INTERFACE_LINK_LIBRARIES "${CONAN_LIBS_ASSIMP}"
++    INTERFACE_LINK_DIRECTORIES "${CONAN_LIB_DIRS_ASSIMP}")  
+ endif()
+-- 
+2.17.1
+

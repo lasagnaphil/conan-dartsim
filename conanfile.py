@@ -18,7 +18,11 @@ class DartsimConan(ConanFile):
         'BSD 2-Clause "Simplified" License'
     )  # Indicates license type of the packaged library; please use
     # SPDX Identifiers https://spdx.org/licenses/
-    exports = ["LICENSE.md", "dartpy_find_python.patch"]  # Packages the license for the
+    exports = [
+        "LICENSE.md",
+        "dartpy_find_python.patch",
+        "find-assimp-using-conan.patch",
+    ]
     generators = "cmake"
 
     # Options may need to change depending on the packaged library.
@@ -91,6 +95,20 @@ conan_basic_setup()""",
 
         tools.patch(
             base_path=self._source_subfolder, patch_file="dartpy_find_python.patch"
+        )
+        tools.patch(
+            base_path=self._source_subfolder, patch_file="find-assimp-using-conan.patch"
+        )
+
+        # hack to get dartpy to link against assimp correctly
+        assimp_libs = [f"-l{lib}" for lib in self.deps_cpp_info["assimp"].libs]
+        tools.replace_in_file(
+            os.path.join(self._source_subfolder, "python", "dartpy", "CMakeLists.txt"),
+            "target_include_directories(dartpy PUBLIC ${CONAN_INCLUDE_DIRS_ASSIMP})",
+            (
+                "target_include_directories(dartpy PUBLIC ${CONAN_INCLUDE_DIRS_ASSIMP})\n"
+                f"target_link_libraries(dartpy PUBLIC {' '.join(assimp_libs)})\n"
+            ),
         )
 
     def system_package_architecture(self):
