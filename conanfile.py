@@ -44,6 +44,7 @@ class DartsimConan(ConanFile):
     _build_subfolder = "build_subfolder"
 
     requires = (
+        "assimp/5.0.0.rc2@rhololkeolke/stable",
         "eigen/3.3.5@conan/stable",
         "boost/1.69.0@conan/stable",
         "boost_regex/1.69.0@bincrafters/stable",
@@ -114,7 +115,6 @@ conan_basic_setup()""",
 
     def system_requirements(self):
         packages = [
-            "libassimp-dev",
             "coinor-libipopt-dev",
             "libtinyxml2-dev",
             "libode-dev",
@@ -135,6 +135,18 @@ conan_basic_setup()""",
     def _configure_cmake(self, with_py=False):
         cmake = CMake(self)
         cmake.definitions["BUILD_TESTS"] = False  # example
+
+        # DART tries to detect if the packaged assimp version has the
+        # constructor/destructor defined. However, this check seems to
+        # fail when using the conan package (which does have these
+        # symbols). This likely has something to do with the
+        # check_cxx_compiles not getting the right flags from
+        # conan. When the final linking happens, there are multiple
+        # definitions of the constructors/destructors which breaks the
+        # build. Manually defining these preprocessor macros to
+        # prevent this issue.
+        cmake.definitions["ASSIMP_AISCENE_CTOR_DTOR_DEFINED"] = 1
+        cmake.definitions["ASSIMP_AIMATERIAL_CTOR_DTOR_DEFINED"] = 1
         if with_py:
             cmake.definitions["DART_BUILD_DARTPY"] = self.options.build_dartpy
             if self.options.build_dartpy:
@@ -234,7 +246,6 @@ conan_basic_setup()""",
         except ValueError:
             pass
 
-        libs.append("assimp")
         libs.append("tinyxml2")
         libs.append("ode")
 
