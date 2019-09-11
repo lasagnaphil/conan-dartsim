@@ -22,13 +22,13 @@ linux: &linux
 matrix:
   include:
   - <<: *linux
-    env: CONAN_GCC_VERSIONS=8 CONAN_DOCKER_IMAGE=conanio/gcc8
+    env: CONAN_GCC_VERSIONS=8 CONAN_DOCKER_IMAGE=rhololkeolke/gcc8
   - <<: *linux
-    env: CONAN_GCC_VERSIONS=9 CONAN_DOCKER_IMAGE=conanio/gcc9
+    env: CONAN_GCC_VERSIONS=9 CONAN_DOCKER_IMAGE=rhololkeolke/gcc9
   - <<: *linux
-    env: CONAN_CLANG_VERSIONS=7.0 CONAN_DOCKER_IMAGE=conanio/clang7
+    env: CONAN_CLANG_VERSIONS=7.0 CONAN_DOCKER_IMAGE=rhololkeolke/clang7
   - <<: *linux
-    env: CONAN_CLANG_VERSIONS=8 CONAN_DOCKER_IMAGE=conanio/clang8
+    env: CONAN_CLANG_VERSIONS=8 CONAN_DOCKER_IMAGE=rhololkeolke/clang8
 install:
   - chmod +x .travis/install.sh
   - "./.travis/install.sh"
