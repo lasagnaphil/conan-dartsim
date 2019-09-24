@@ -22,6 +22,7 @@ class DartsimConan(ConanFile):
         "LICENSE.md",
         "dartpy_find_python.patch",
         "find-assimp-using-conan.patch",
+        "fix-findeigen3.patch",
     ]
     generators = "cmake"
 
@@ -49,7 +50,7 @@ class DartsimConan(ConanFile):
 
     requires = (
         "assimp/5.0.0.rc2@rhololkeolke/stable",
-        "eigen/3.3.5@conan/stable",
+        "eigen/3.3.7@conan/stable",
         "boost/1.69.0@conan/stable",
         "boost_regex/1.69.0@bincrafters/stable",
         "libccd/2.1@rhololkeolke/stable",
@@ -63,7 +64,8 @@ class DartsimConan(ConanFile):
     def configure(self):
         if self.options.build_dartpy and self.options.python_version == "UNSET":
             raise ConanInvalidConfiguration(
-                "If you enable the build_dartpy option, you must specify a python version"
+                "If you enable the build_dartpy option, you must "
+                "specify a python version"
             )
 
     def config_options(self):
@@ -99,6 +101,7 @@ conan_basic_setup()""",
         tools.patch(
             base_path=self._source_subfolder, patch_file="find-assimp-using-conan.patch"
         )
+        tools.patch(base_path=self._source_subfolder, patch_file="fix-findeigen3.patch")
 
         # hack to get dartpy to link against assimp correctly
         assimp_libs = [f"-l{lib}" for lib in self.deps_cpp_info["assimp"].libs]

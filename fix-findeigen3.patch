@@ -1,0 +1,46 @@
+From 539238fbbb2aa3a3ee4bd9265362c57037a60ee9 Mon Sep 17 00:00:00 2001
+From: Devin Schwab <digidevin@gmail.com>
+Date: Tue, 24 Sep 2019 13:02:47 -0400
+Subject: [PATCH] Fix FindEigen3
+
+---
+ cmake/DARTFindEigen3.cmake | 27 +++------------------------
+ 1 file changed, 3 insertions(+), 24 deletions(-)
+
+diff --git a/cmake/DARTFindEigen3.cmake b/cmake/DARTFindEigen3.cmake
+index 1dba2db3b..272565673 100644
+--- a/cmake/DARTFindEigen3.cmake
++++ b/cmake/DARTFindEigen3.cmake
+@@ -1,26 +1,5 @@
+-# Copyright (c) 2011-2019, The DART development contributors
+-# All rights reserved.
+-#
+-# The list of contributors can be found at:
+-#   https://github.com/dartsim/dart/blob/master/LICENSE
+-#
+-# This file is provided under the "BSD-style" License
+-
+-# We intentionally don't specify the required Eigen3 version like
+-# find_package(Eigen3 3.2.92) because the version file is not provided by
+-# upstream until 3.3.1.
+-find_package(Eigen3 REQUIRED CONFIG)
+-if(EIGEN3_VERSION_STRING VERSION_LESS 3.2.92)  # 3.3~beta1
+-  message(FATAL_ERROR "Eigen3 ${EIGEN3_VERSION_STRING} is found but >= 3.2.92 "
+-    "(3.3~beta1) is required"
+-  )
+-endif()
+-
+-# Set target Eigen3::Eigen if not set
+-# The target is not imported by upstream until 3.3.2
+-if(Eigen3_FOUND AND NOT TARGET Eigen3::Eigen)
++if(NOT Eigen3_FOUND OR NOT TARGET Eigen3::Eigen)
++  set(Eigen3_FOUND TRUE)
+   add_library(Eigen3::Eigen INTERFACE IMPORTED)
+-  set_target_properties(Eigen3::Eigen PROPERTIES
+-    INTERFACE_INCLUDE_DIRECTORIES "${EIGEN3_INCLUDE_DIRS}"
+-  )
++  set_target_properties(Eigen3::Eigen PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${CONAN_INCLUDE_DIRS_EIGEN}")
+ endif()
+-- 
+2.17.1
+
