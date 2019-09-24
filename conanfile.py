@@ -23,6 +23,7 @@ class DartsimConan(ConanFile):
         "dartpy_find_python.patch",
         "find-assimp-using-conan.patch",
         "fix-findeigen3.patch",
+        "fix-findfcl.patch",
     ]
     generators = "cmake"
 
@@ -102,6 +103,7 @@ conan_basic_setup()""",
             base_path=self._source_subfolder, patch_file="find-assimp-using-conan.patch"
         )
         tools.patch(base_path=self._source_subfolder, patch_file="fix-findeigen3.patch")
+        tools.patch(base_path=self._source_subfolder, patch_file="fix-findfcl.patch")
 
         # hack to get dartpy to link against assimp correctly
         assimp_libs = [f"-l{lib}" for lib in self.deps_cpp_info["assimp"].libs]

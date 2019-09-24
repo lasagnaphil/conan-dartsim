@@ -1,0 +1,43 @@
+From 9fa417cf163b7d010f19f69ad54516fc100a033c Mon Sep 17 00:00:00 2001
+From: Devin Schwab <digidevin@gmail.com>
+Date: Tue, 24 Sep 2019 15:58:52 -0400
+Subject: [PATCH] Fix Findfcl
+
+---
+ cmake/DARTFindfcl.cmake | 23 ++++++-----------------
+ 1 file changed, 6 insertions(+), 17 deletions(-)
+
+diff --git a/cmake/DARTFindfcl.cmake b/cmake/DARTFindfcl.cmake
+index 5ca6dad4b..1da369715 100644
+--- a/cmake/DARTFindfcl.cmake
++++ b/cmake/DARTFindfcl.cmake
+@@ -1,20 +1,9 @@
+-# Copyright (c) 2011-2019, The DART development contributors
+-# All rights reserved.
+-#
+-# The list of contributors can be found at:
+-#   https://github.com/dartsim/dart/blob/master/LICENSE
+-#
+-# This file is provided under the "BSD-style" License
+-
+-find_package(fcl 0.3.2 REQUIRED MODULE)
+-
+-# Set target fcl if not set
+-# Upstream provides the target since 0.5.0 but some package managers don't
+-# install the config file, which defines the target.
+-if((FCL_FOUND OR fcl_FOUND) AND NOT TARGET fcl)
++if(NOT FCL_FOUND OR NOT fcl_FOUND OR NOT TARGET fcl)
++  set(FCL_FOUND TRUE)
++  set(fcl_FOUND TRUE)
+   add_library(fcl INTERFACE IMPORTED)
+   set_target_properties(fcl PROPERTIES
+-    INTERFACE_INCLUDE_DIRECTORIES "${FCL_INCLUDE_DIRS}"
+-    INTERFACE_LINK_LIBRARIES "${FCL_LIBRARIES}"
+-  )
++    INTERFACE_INCLUDE_DIRECTORIES "${CONAN_INCLUDE_DIRS_FCL}"
++    INTERFACE_LINK_LIBRARIES "${CONAN_LIBS_FCL}"
++    INTERFACE_LINK_DIRECTORIES "${CONAN_LIB_DIRS_FCL}")
+ endif()
+-- 
+2.17.1
+
