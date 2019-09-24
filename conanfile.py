@@ -105,14 +105,19 @@ conan_basic_setup()""",
         tools.patch(base_path=self._source_subfolder, patch_file="fix-findeigen3.patch")
         tools.patch(base_path=self._source_subfolder, patch_file="fix-findfcl.patch")
 
-        # hack to get dartpy to link against assimp correctly
-        assimp_libs = [f"-l{lib}" for lib in self.deps_cpp_info["assimp"].libs]
+        # hack to get dartpy to link against assimp, fcl and octomap correctly
+        dartpy_libs = [f"-l{lib}" for lib in self.deps_cpp_info["assimp"].libs]
+        dartpy_libs.extend([f"-l{lib}" for lib in self.deps_cpp_info["fcl"].libs])
+        dartpy_libs.extend([f"-l{lib}" for lib in self.deps_cpp_info["octomap"].libs])
         tools.replace_in_file(
             os.path.join(self._source_subfolder, "python", "dartpy", "CMakeLists.txt"),
             "target_include_directories(dartpy PUBLIC ${CONAN_INCLUDE_DIRS_ASSIMP})",
             (
-                "target_include_directories(dartpy PUBLIC ${CONAN_INCLUDE_DIRS_ASSIMP})\n"
-                f"target_link_libraries(dartpy PUBLIC {' '.join(assimp_libs)})\n"
+                "target_include_directories(dartpy PUBLIC ${CONAN_INCLUDE_DIRS_ASSIMP} "
+                "${CONAN_INCLUDE_DIRS_FCL} ${CONAN_INCLUDE_DIRS_OCTOMAP})\n"
+                "target_link_directories(dartpy PUBLIC ${CONAN_LIB_DIRS_ASSIMP} "
+                "${CONAN_LIB_DIRS_FCL} ${CONAN_LIB_DIRS_OCTOMAP})\n"
+                f"target_link_libraries(dartpy PUBLIC {' '.join(dartpy_libs)})\n"
             ),
         )
 
